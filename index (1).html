@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Stratton Prime — Optymalizacja kosztów zatrudnienia</title>
+    <meta name="description"
+        content="20–30% oszczędności na kosztach zatrudnienia przy zachowaniu netto pracowników. Darmowa kalkulacja.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #121316;
+            background: #fff
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        /* Tokens */
+        :root {
+            --ink: #121316;
+            --muted: #667085;
+            --line: #eaeef2;
+            --accent: #0ea5e9;
+            --accent-hover: #0284c7;
+            --gold: #d4af37;
+            --gold-hover: #b8860b;
+            --wa: #25D366;
+            --good: #168a3a;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s
+        }
+
+        .btn--primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: transparent
+        }
+
+        .btn--primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px)
+        }
+
+        .btn--secondary {
+            background: var(--gold);
+            color: #111;
+            border-color: transparent
+        }
+
+        .btn--secondary:hover {
+            background: var(--gold-hover);
+            color: #fff;
+            transform: translateY(-2px)
+        }
+
+        .btn--ghost {
+            background: #fff;
+            color: var(--ink)
+        }
+
+        .btn--whats {
+            background: var(--wa);
+            color: #fff;
+            border-color: transparent
+        }
+
+        .btn--whats:hover {
+            filter: brightness(.95);
+            transform: translateY(-2px)
+        }
+
+        .btn--full {
+            display: block;
+            width: 100%;
+            text-align: center
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #ffffffe6;
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(8px)
+        }
+
+        .nav {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto
+        }
+
+        .nav-cta {
+            display: flex;
+            gap: 10px
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            padding: 88px 0 60px;
+            border-bottom: 1px solid var(--line);
+            background:
+                radial-gradient(1100px 420px at 70% -10%, rgba(14, 165, 233, .16), transparent 60%),
+                linear-gradient(180deg, #eaf6ff 0%, #ffffff 80%);
+        }
+
+        .hero .grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 28px;
+            align-items: center
+        }
+
+        @media (max-width:900px) {
+            .hero .grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            font-size: clamp(32px, 4.8vw, 54px);
+            line-height: 1.06;
+            margin: 0 0 12px
+        }
+
+        .hero .lead {
+            color: var(--muted);
+            margin: 0 0 22px
+        }
+
+        .u-underline {
+            background: linear-gradient(120deg, transparent 0, transparent 40%, rgba(14, 165, 233, .18) 40%, rgba(14, 165, 233, .18) 90%, transparent 90%);
+            border-bottom: .18em solid var(--accent);
+            border-radius: 4px
+        }
+
+        /* prawa karta: sieć avatarów */
+        .panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 16px 36px rgba(2, 8, 23, .06)
+        }
+
+        .network {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid var(--line);
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(2, 8, 23, .06)
+        }
+
+        .network svg {
+            position: absolute;
+            inset: 0
+        }
+
+        .network .dot {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 3px solid #fff;
+            box-shadow: 0 6px 16px rgba(2, 8, 23, .12)
+        }
+
+        .network .dot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .network .dot--1 {
+            top: 12%;
+            left: 8%
+        }
+
+        .network .dot--2 {
+            top: 8%;
+            right: 14%
+        }
+
+        .network .dot--3 {
+            bottom: 12%;
+            left: 18%
+        }
+
+        .network .dot--4 {
+            bottom: 10%;
+            right: 8%
+        }
+
+        .network .dot--5 {
+            top: 38%;
+            left: 44%
+        }
+
+        /* Sections */
+        section {
+            padding: 72px 0
+        }
+
+        .section-title {
+            font-weight: 800;
+            font-size: clamp(24px, 3.6vw, 34px);
+            margin: 0 0 10px
+        }
+
+        .section-sub {
+            color: var(--muted);
+            margin: 0 0 22px
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .06)
+        }
+
+        /* żółtawy miękki podkład pod karty */
+        .soft {
+            background: linear-gradient(180deg, #fffdf3 0%, #f7fbff 100%)
+        }
+
+        /* Kalkulator */
+        .sp-hidden {
+            display: none
+        }
+
+        .sp-calc-title {
+            margin: 0 0 12px;
+            font-weight: 800
+        }
+
+        .sp-calc-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px
+        }
+
+        .sp-calc-group label {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .sp-calc-group input,
+        .sp-calc-group select {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            color: #111
+        }
+
+        .sp-calc-group input:focus,
+        .sp-calc-group select:focus {
+            outline: none;
+            border-color: #bfe3f7;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, .18)
+        }
+
+        .sp-calc-group select {
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px 20px;
+        }
+
+        .sp-calc-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 14px 0
+        }
+
+        .sp-btn {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            font-weight: 800;
+            cursor: pointer
+        }
+
+        .sp-btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: transparent
+        }
+
+        .sp-btn-primary:hover {
+            background: var(--accent-hover)
+        }
+
+        .sp-btn-secondary {
+            background: #fff
+        }
+
+        .sp-calc-results {
+            margin-top: 14px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #f7fbff
+        }
+
+        .sp-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--line)
+        }
+
+        .sp-result-item:last-child {
+            border-bottom: none
+        }
+
+        .sp-result-label {
+            color: var(--muted)
+        }
+
+        .sp-positive {
+            color: var(--good);
+            font-weight: 800
+        }
+
+        /* Przedstawiciel */
+        .rep {
+            display: grid;
+            grid-template-columns: 132px 1fr;
+            gap: 16px;
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 10px 24px rgba(2, 8, 23, .08)
+        }
+
+        .rep img {
+            width: 132px;
+            height: 132px;
+            object-fit: cover;
+            border-radius: 16px
+        }
+
+        .rep .name {
+            font-weight: 800;
+            font-size: 20px
+        }
+
+        .rep .role {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 6px
+        }
+
+        .rep .desc {
+            color: #475467;
+            margin: 8px 0
+        }
+
+        .rep .meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .tag {
+            font-size: 12px;
+            background: #f2f4f7;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--line)
+        }
+
+        .rep .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap
+        }
+
+        /* WhatsApp bubble */
+        .whats-bubble {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--wa);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 999px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .18)
+        }
+
+        .whats-bubble img {
+            width: 22px;
+            height: 22px
+        }
+
+        @media (max-width:680px) {
+            .whats-bubble span {
+                display: none
+            }
+        }
+
+        /* Footer & sticky */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--line);
+            color: #667085;
+            background: #fff;
+            text-align: center
+        }
+
+        .sticky-cta {
+            display: none
+        }
+
+        @media (max-width:780px) {
+            .sticky-cta {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 25;
+                background: #ffffffe6;
+                border-top: 1px solid var(--line);
+                backdrop-filter: blur(6px);
+                display: block;
+                padding: 12px 16px
+            }
+
+            .sticky-cta .wrap {
+                max-width: 1120px;
+                margin: 0 auto;
+                display: flex;
+                gap: 10px
+            }
+
+            .sticky-cta .btn {
+                flex: 1
+            }
+
+            .hero {
+                padding-bottom: 120px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav">
+            <div class="logo">
+                <img src="images/logo-stratton.png" alt="Stratton Prime">
+                <span>Stratton Prime</span>
+            </div>
+            <div class="nav-cta">
+                <!-- zostaje jedno CTA w headerze -->
+                <a href="#kalkulacja" class="btn btn--primary">Darmowa kalkulacja</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO (jedno główne CTA, bez „Model…”) -->
+    <section class="hero" id="start">
+        <div class="container grid">
+            <div>
+                <h1>Oszczędź 20–30% na kosztach zatrudnienia, które <span class="u-underline">konwertują</span> w zysk.
+                </h1>
+                <p class="lead">Utrzymujemy wynagrodzenie netto pracowników. Ty zyskujesz niższy koszt zatrudnienia —
+                    przejrzyście, szybko, z kompletem dokumentów.</p>
+                <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+                    <a href="#kalkulacja" class="btn btn--primary">Zamów darmową kalkulację</a>
+                    <a href="#dlaczego" class="btn btn--ghost">Zobacz jak to działa</a>
+                </div>
+            </div>
+
+            <aside class="panel">
+                <div class="network" aria-hidden="true">
+                    <svg viewBox="0 0 800 600" fill="none">
+                        <defs>
+                            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#1fb6ff" stop-opacity=".65" />
+                                <stop offset="1" stop-color="#d4af37" stop-opacity=".65" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M120,120 C260,90 360,80 520,120" stroke="url(#g)" stroke-width="2.5" opacity=".85" />
+                        <path d="M140,470 C300,420 520,420 700,520" stroke="url(#g)" stroke-width="2.5" opacity=".85" />
+                        <path d="M380,300 C420,260 520,250 690,120" stroke="url(#g)" stroke-width="2.5" opacity=".85" />
+                        <path d="M380,300 C420,340 540,360 700,520" stroke="url(#g)" stroke-width="2.5" opacity=".85" />
+                    </svg>
+                    <!-- profesjonalne, neutralne fallbacki -->
+                    <div class="dot dot--1"><img src="images/rep-a.jpg" alt="HR" onerror="this.src='https://i.pravatar.cc/128?img=11'">
+                    </div>
+                    <div class="dot dot--2"><img src="images/rep-b.jpg" alt="CFO" onerror="this.src='https://i.pravatar.cc/128?img=14'">
+                    </div>
+                    <div class="dot dot--3"><img src="images/rep-c.jpg" alt="Kadry" onerror="this.src='https://i.pravatar.cc/128?img=32'">
+                    </div>
+                    <div class="dot dot--4"><img src="images/rep-d.jpg" alt="CEO" onerror="this.src='https://i.pravatar.cc/128?img=16'">
+                    </div>
+                    <div class="dot dot--5"><img src="images/rep-e.jpg" alt="Zespół" onerror="this.src='https://i.pravatar.cc/128?img=20'">
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- Dlaczego to działa (z miękkim żółtym tłem) -->
+    <section id="dlaczego" class="soft">
+        <div class="container">
+            <h2 class="section-title">Dlaczego to działa?</h2>
+            <p class="section-sub">Część wynagrodzenia realizujemy jako świadczenie współfinansowane przez pracownika,
+                co obniża składki po stronie pracodawcy — przy zachowaniu netto u pracownika.</p>
+            <div class="cards">
+                <div class="card">
+                    <h4>Mniejsze koszty stałe</h4>
+                    <p>Redukcja kosztów składkowych bez wpływu na wypłatę netto.</p>
+                </div>
+                <div class="card">
+                    <h4>Gotowe procedury</h4>
+                    <p>Dokumenty, komunikacja i szkolenie HR — wszystko w pakiecie.</p>
+                </div>
+                <div class="card">
+                    <h4>Szybkie wdrożenie</h4>
+                    <p>Start po audycie list płac — zwykle 2–4 tygodnie.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kalkulator -->
+    <section id="kalkulator">
+        <div class="container">
+            <h2 class="section-title">Kalkulator oszczędności</h2>
+            <p class="section-sub">Sprawdź, ile możesz uwolnić miesięcznie i rocznie — dla pojedynczego etatu lub całej
+                firmy.</p>
+
+            <div class="cards">
+                <div class="card">
+                    <h3 class="sp-calc-title">Parametry</h3>
+                    <form id="sp-calc-form" class="sp-calc-form" novalidate>
+                        <div class="sp-calc-group">
+                            <label for="sp-typ-umowy">Typ umowy</label>
+                            <select id="sp-typ-umowy">
+              <option value="uop" selected>Umowa o pracę</option>
+              <option value="zlecenie">Umowa zlecenie</option>
+            </select>
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-netto">Wynagrodzenie netto (PLN)</label>
+                            <input type="number" id="sp-netto" value="5000" required min="1000" max="50000">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-udzial">Udział benefitu w wynagrodzeniu (%)</label>
+                            <input type="number" id="sp-udzial" value="20" step="0.1" required min="1" max="90">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-cena">Cena rynkowa świadczenia (PLN)</label>
+                            <input type="number" id="sp-cena" value="400" required min="0">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-oplata">Odpłatność pracownika (PLN)</label>
+                            <input type="number" id="sp-oplata" value="50" required min="0">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-zus-pracodawca">ZUS pracodawca (%)</label>
+                            <input type="number" id="sp-zus-pracodawca" value="20.48" step="0.01" required min="0" max="40">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-zus-pracownik">ZUS pracownik (%)</label>
+                            <input type="number" id="sp-zus-pracownik" value="13.71" step="0.01" required min="0" max="25">
+                        </div>
+                        <div class="sp-calc-group">
+                            <label for="sp-pit">PIT (%)</label>
+                            <input type="number" id="sp-pit" value="12" step="0.01" required min="0" max="30">
+                        </div>
+                    </form>
+                    <div class="sp-calc-actions">
+                        <button class="sp-btn sp-btn-primary" id="sp-calc-run" type="button">💰 Oblicz oszczędności</button>
+                        <button class="sp-btn sp-btn-secondary" id="sp-calc-reset" type="button">↺ Reset</button>
+                    </div>
+                    <div id="sp-calc-results" class="sp-calc-results sp-hidden" aria-live="polite">
+                        <div class="sp-result-item">
+                            <div class="sp-result-label">Koszt A (podwyżka brutto):</div>
+                            <div class="sp-result-value" id="sp-cost-a">-</div>
+                        </div>
+                        <div class="sp-result-item">
+                            <div class="sp-result-label">Koszt B (benefit + odpłatność):</div>
+                            <div class="sp-result-value" id="sp-cost-b">-</div>
+                        </div>
+                        <div class="sp-result-item">
+                            <div class="sp-result-label">Oszczędność miesięczna:</div>
+                            <div class="sp-result-value sp-positive" id="sp-sav-month">-</div>
+                        </div>
+                        <div class="sp-result-item">
+                            <div class="sp-result-label">Oszczędność roczna:</div>
+                            <div class="sp-result-value sp-positive" id="sp-sav-year">-</div>
+                        </div>
+                        <p class="section-sub" style="font-size:13px">* Kalkulacja poglądowa — finalne wartości w
+                            ofercie szczegółowej.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Skalowanie (na skróty)</h4>
+                    <p class="section-sub" style="font-size:14px">Na bazie przykładu 5 000 zł netto / etat</p>
+                    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+                        <div class="card" style="padding:14px">
+                            <div style="color:var(--muted);font-size:13px">1 etat</div>
+                            <div style="font-weight:800;font-size:20px;color:var(--good)">~11 280 zł / rok</div>
+                        </div>
+                        <div class="card" style="padding:14px">
+                            <div style="color:var(--muted);font-size:13px">50 etatów</div>
+                            <div style="font-weight:800;font-size:20px;color:var(--good)">~564 000 zł / rok</div>
+                        </div>
+                        <div class="card" style="padding:14px">
+                            <div style="color:var(--muted);font-size:13px">200 etatów</div>
+                            <div style="font-weight:800;font-size:20px;color:var(--good)">~2 256 000 zł / rok</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Przedstawiciel -->
+    <section id="przedstawiciel" class="soft">
+        <div class="container">
+            <h2 class="section-title">Twój kontakt</h2>
+            <p class="section-sub">Masz pytania? Napisz lub zadzwoń — przeprowadzimy Cię przez szybkie policzenie
+                oszczędności.</p>
+
+            <div class="rep">
+                <img src="images/rep-sales.jpg" alt="Przedstawiciel Stratton Prime" onerror="this.src='https://i.pravatar.cc/256?img=20'">
+                <div>
+                    <div class="name">Dominik Kowalski</div>
+                    <div class="role">Przedstawiciel Stratton Prime</div>
+                    <p class="desc">Specjalizuje się w optymalizacji kosztów wynagrodzeń w firmach 50–500 etatów. Szybko
+                        przejdziemy od liczb do wdrożenia.</p>
+                    <div class="meta">
+                        <span class="tag">+48 600 000 000</span>
+                        <span class="tag">dominik@strattonprime.pl</span>
+                        <span class="tag">WhatsApp</span>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn--secondary" href="tel:+48600000000">Zadzwoń</a>
+                        <a class="btn btn--ghost" href="mailto:dominik@strattonprime.pl">Napisz e-mail</a>
+                        <a class="btn btn--whats"
+                            href="https://wa.me/48600000000?text=Cze%C5%9B%C4%87%2C%20poprosz%C4%99%20o%20kalkulacj%C4%99"
+                            target="_blank" rel="noopener">WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead form -->
+    <section id="kalkulacja">
+        <div class="container">
+            <h2 class="section-title">Zamów darmową kalkulację</h2>
+            <p class="section-sub">Wyślij podstawowe dane — policzymy oszczędność na Twoich listach płac i wrócimy w
+                24h.</p>
+
+            <form class="form" id="form-lead">
+                <div class="cards" style="grid-template-columns:1fr 1fr">
+                    <div class="card"><label>Nazwa firmy*</label><input name="company" class="input" required style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px">
+                    </div>
+                    <div class="card"><label>Imię i nazwisko*</label><input name="name" class="input" required style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px">
+                    </div>
+                    <div class="card"><label>E-mail*</label><input name="email" type="email" class="input" required style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px">
+                    </div>
+                    <div class="card"><label>Telefon*</label><input name="phone" type="tel" class="input" required style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px">
+                    </div>
+                    <div class="card"><label>Szac. liczba etatów</label><input name="headcount" type="number" min="1" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px">
+                    </div>
+                    <div class="card" style="grid-column:1/-1">
+                        <label>Uwagi / branża</label><textarea name="notes" style="width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line);border-radius:12px"></textarea>
+                    </div>
+                </div>
+                <div style="margin-top:12px"><button class="btn btn--primary" type="submit">Wyślij</button></div>
+                <p class="section-sub" id="lead-msg" style="font-size:13px;margin:8px 0 0"></p>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">© Stratton Prime • kontakt: <a
+                href="mailto:kontakt@strattonprime.pl">kontakt@strattonprime.pl</a></div>
+    </footer>
+
+    <!-- WhatsApp bubble -->
+    <a class="whats-bubble"
+        href="https://wa.me/48600000000?text=Cze%C5%9B%C4%87%2C%20chc%C4%99%20policzy%C4%87%20oszcz%C4%99dno%C5%9Bci%20Stratton%20Prime"
+        target="_blank" rel="noopener" aria-label="Napisz na WhatsApp">
+        <img src="https://static-00.iconduck.com/assets.00/whatsapp-icon-512x512-wf9x1y7t.png" alt="">
+        <span>Zapytaj na WhatsApp</span>
+    </a>
+
+    <script>
+        (function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+
+  const PRESETS = {
+    uop:{ zusPracodawca:20.48, zusPracownik:13.71, pit:12, udzial:20 },
+    zlecenie:{ zusPracodawca:19.50, zusPracownik:13.71, pit:12, udzial:20 }
+  };
+  function applyPreset(kind){
+    const p = PRESETS[kind]||PRESETS.uop;
+    $("sp-zus-pracodawca").value=p.zusPracodawca;
+    $("sp-zus-pracownik").value=p.zusPracownik;
+    $("sp-pit").value=p.pit;
+    $("sp-udzial").value=p.udzial;
+  }
+  function num(v){return isFinite(v)?Number(v):NaN}
+  function calc(){
+    const netto= num($("sp-netto").value),
+          udzBen= num($("sp-udzial").value)/100,
+          cena  = num($("sp-cena").value),
+          opl   = num($("sp-oplata").value),
+          zusP  = num($("sp-zus-pracodawca").value)/100,
+          zusW  = num($("sp-zus-pracownik").value)/100,
+          pit   = num($("sp-pit").value)/100;
+    if([netto,udzBen,cena,opl,zusP,zusW,pit].some(v=>!isFinite(v)||v<0)){ alert("Uzupełnij prawidłowo pola."); return; }
+    const brutto = netto/Math.max(0.0001,(1 - zusW - pit));
+    const cash   = brutto*(1 - udzBen);
+    const bPrzych= Math.max(cena - opl, 0);
+    const costA  = brutto*(1 + zusP);
+    const costB  = cash*(1 + zusP) + bPrzych;
+    const savM   = Math.max(costA - costB,0), savY=savM*12;
+    $("sp-cost-a").textContent  = costA.toFixed(2)+" PLN";
+    $("sp-cost-b").textContent  = costB.toFixed(2)+" PLN";
+    $("sp-sav-month").textContent= savM.toFixed(2)+" PLN";
+    $("sp-sav-year").textContent = savY.toFixed(2)+" PLN";
+    document.getElementById("sp-calc-results").classList.remove("sp-hidden");
+  }
+
+  applyPreset("uop");
+  document.getElementById("sp-typ-umowy").addEventListener("change", e=>applyPreset(e.target.value));
+  document.getElementById("sp-calc-run").addEventListener("click", e=>{e.preventDefault();calc();});
+  document.getElementById("sp-calc-reset").addEventListener("click", ()=>{
+    $("sp-calc-form").reset(); applyPreset(document.getElementById("sp-typ-umowy").value||"uop");
+    $("sp-netto").value=5000; $("sp-cena").value=400; $("sp-oplata").value=50;
+    document.getElementById("sp-calc-results").classList.add("sp-hidden");
+  });
+
+  // Lead form (bez backendu – tylko komunikat)
+  const lead=document.getElementById("form-lead"), msg=document.getElementById("lead-msg");
+  lead.addEventListener("submit", e=>{
+    e.preventDefault();
+    msg.textContent="Dziękujemy! Skontaktujemy się w 24h.";
+    msg.style.color="var(--good)";
+    lead.reset();
+  });
+})();
+    </script>
+</body>
+
+</html>
